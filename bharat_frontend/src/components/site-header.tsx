@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Search, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
-import logo from "@/assets/logo-bharat-standard.jpeg";
+import logo from "@/assets/logo-bs-mark.jpeg";
 import { publicService } from "@/services/public.service";
 
 function formattedDate() {
@@ -53,7 +53,7 @@ export function SiteHeader() {
           <nav className="flex items-center gap-4">
             <Link to="/about" className="hover:text-primary transition-colors">About</Link>
             <Link to="/contact" className="hover:text-primary transition-colors">Contact</Link>
-            <Link to="/publish" className="hover:text-primary transition-colors">Publish with us</Link>
+            {/* <Link to="/publish" className="hover:text-primary transition-colors">Publish with us</Link> */}
           </nav>
         </div>
       </div>
@@ -92,12 +92,12 @@ export function SiteHeader() {
             >
               <Search className="w-4 h-4" />
             </button>
-            <Link
+            {/* <Link
               to="/publish"
               className="hidden md:inline-flex items-center bg-primary text-primary-foreground text-xs font-bold tracking-wide uppercase px-4 py-2 hover:bg-primary/90 transition-colors"
             >
               Subscribe
-            </Link>
+            </Link> */}
             {isLoggedIn ? (
               <>
                 <Link
