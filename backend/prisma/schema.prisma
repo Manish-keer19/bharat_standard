@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  email      String     @unique
+  name       String?
+  password   String
+  role       Role       @default(USER)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  categories Category[]
+  articles   Article[]
+  magazineCovers MagazineCover[]
+  listicles  Listicle[]
+}
+
+model Category {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  name        String    @unique
+  description String?
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String    @db.ObjectId
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  articles    Article[]
+}
+
+model Article {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  excerpt     String?
+  content     String
+  imageUrl    String?
+  images      String[] @default([])
+  author      String?
+  published   Boolean  @default(false)
+  category    Category @relation(fields: [categoryId], references: [id])
+  categoryId  String   @db.ObjectId
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String   @db.ObjectId
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model MagazineCover {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  imageUrl  String
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Listicle {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  intro     String?
+  coverUrl  String?
+  items     Json     // Array of { title, body, imageUrl }
+  published Boolean  @default(false)
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
