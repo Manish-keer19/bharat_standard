@@ -1,0 +1,97 @@
+BEST WAY (Industry standard): Nginx + SSL (Let’s Encrypt)
+🔥 Goal
+
+You want this:
+
+Frontend: https://onebusinessindia.com
+API:      https://onebusinessindia.com/api
+Backend:  http://localhost:3001 (hidden)
+✅ STEP 1: Install Nginx (if not installed)
+sudo apt update
+sudo apt install nginx -y
+
+Check:
+
+sudo systemctl status nginx
+✅ STEP 2: Point domain to VPS
+
+Make sure DNS is:
+
+A record:
+onebusinessindia.com → YOUR_VPS_IP
+www.onebusinessindia.com → YOUR_VPS_IP
+✅ STEP 3: Install SSL (Certbot)
+
+Install Certbot:
+
+sudo apt install certbot python3-certbot-nginx -y
+
+Now run:
+
+sudo certbot --nginx -d onebusinessindia.com -d www.onebusinessindia.com
+
+👉 It will:
+
+Automatically enable HTTPS
+Install SSL certificate
+Redirect HTTP → HTTPS
+✅ STEP 4: Configure Nginx reverse proxy
+
+Edit config:
+
+sudo nano /etc/nginx/sites-available/default
+
+Replace with:
+
+server {
+    server_name onebusinessindia.com www.onebusinessindia.com;
+
+    root /var/www/html;  # your React build folder
+
+    index index.html;
+
+    # Frontend (React)
+    location / {
+        try_files $uri /index.html;
+    }
+
+    # Backend API
+    location /api/ {
+        proxy_pass http://127.0.0.1:3001/;
+        proxy_http_version 1.1;
+
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+✅ STEP 5: Restart Nginx
+sudo nginx -t
+sudo systemctl restart nginx
+✅ STEP 6: Run backend locally (IMPORTANT)
+
+Your backend should run like:
+
+node server.js
+
+or using PM2:
+
+pm2 start server.js --name backend
+pm2 save
+
+It should listen on:
+
+http://127.0.0.1:3001
+
+NOT public IP.
+
+🎯 FINAL RESULT
+
+Now your API becomes:
+
+https://onebusinessindia.com/api/v1/public/articles
+
+✔ Secure (HTTPS)
+✔ No mixed content error
+✔ No IP exposure
+✔ Production ready
