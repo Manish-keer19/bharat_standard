@@ -81,8 +81,26 @@ function HomePage() {
     return (
       <div className="min-h-screen flex flex-col">
         <SiteHeader />
-        <div className="flex-1 container-bs py-20 flex items-center justify-center">
-          <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+        <div className="flex-1 container-bs py-10">
+          <div className="grid lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-6">
+              <div className="aspect-video w-full bg-surface animate-pulse" />
+              <div className="h-10 w-3/4 bg-surface animate-pulse" />
+              <div className="h-6 w-full bg-surface animate-pulse" />
+            </div>
+            <div className="space-y-6">
+              <div className="h-8 w-1/2 bg-surface animate-pulse" />
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className="flex gap-4">
+                  <div className="w-20 h-20 bg-surface animate-pulse flex-shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-4 w-full bg-surface animate-pulse" />
+                    <div className="h-4 w-1/2 bg-surface animate-pulse" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
         <SiteFooter />
       </div>

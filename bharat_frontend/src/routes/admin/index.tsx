@@ -91,16 +91,16 @@ function AdminOverview() {
                 <div className="h-6 w-3/4 bg-white rounded-none animate-pulse" />
               </div>
             ) : stats.lastArticle ? (
-              <div className="flex gap-8 items-center bg-white p-6 border border-rule card-news">
+              <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 items-start sm:items-center bg-white p-4 sm:p-6 border border-rule card-news">
                 {stats.lastArticle.imageUrl && (
-                  <div className="w-24 h-24 flex-shrink-0 border border-rule overflow-hidden">
+                  <div className="w-full sm:w-24 h-48 sm:h-24 flex-shrink-0 border border-rule overflow-hidden">
                     <img src={stats.lastArticle.imageUrl} className="w-full h-full object-cover" alt="" />
                   </div>
                 )}
-                <div>
+                <div className="flex-1 min-w-0">
                   <span className="eyebrow text-[9px] mb-1 block">Most Recent Publication</span>
-                  <p className="font-serif font-bold text-xl text-ink line-clamp-1">{stats.lastArticle.title}</p>
-                  <p className="text-[10px] font-bold text-ink-muted uppercase tracking-widest mt-2">Circulated on {new Date(stats.lastArticle.updatedAt).toLocaleDateString()}</p>
+                  <p className="font-serif font-bold text-xl text-ink line-clamp-2 sm:line-clamp-1">{stats.lastArticle.title}</p>
+                  <p className="text-[10px] font-bold text-ink-muted uppercase tracking-widest mt-2 italic">Circulated on {new Date(stats.lastArticle.updatedAt).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}</p>
                 </div>
               </div>
             ) : (

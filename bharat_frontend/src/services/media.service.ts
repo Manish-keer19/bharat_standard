@@ -23,7 +23,7 @@ export const mediaService = {
       },
     });
     if (res.data.success) {
-      return res.data.data.urls;
+      return res.data.data.map((item: any) => item.url);
     }
     throw new Error(res.data.message || "Upload failed");
   },

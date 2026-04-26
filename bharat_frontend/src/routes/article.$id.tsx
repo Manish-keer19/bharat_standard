@@ -10,21 +10,23 @@ export const Route = createFileRoute("/article/$id")({
       const res = await publicService.getArticle(params.id);
       if (!res.success || !res.data) throw notFound();
       
-      const art = res.data;
-      const mappedArticle = {
-        id: art.id,
-        title: art.title,
-        excerpt: art.excerpt || "",
-        content: art.content,
-        image: art.imageUrl || "https://images.unsplash.com/photo-1504711434969-e33886168f5c",
-        category: art.category?.name || "News",
-        author: art.author || "Bharat Standard",
-        date: new Date(art.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
-        readMin: Math.ceil((art.content?.length || 0) / 1000) || 3
-      };
+        const art = res.data;
+        const mappedArticle = {
+          id: art.id,
+          title: art.title,
+          excerpt: art.excerpt || "",
+          content: art.content,
+          image: art.imageUrl || "https://images.unsplash.com/photo-1504711434969-e33886168f5c",
+          images: art.images || [],
+          category: art.category?.name || "News",
+          author: art.author || "Bharat Standard",
+          date: new Date(art.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
+          readMin: Math.ceil((art.content?.length || 0) / 1000) || 3
+        };
 
       return { article: mappedArticle };
     } catch (error) {
+      console.error("Loader error for article:", error);
       throw notFound();
     }
   },
@@ -50,6 +52,24 @@ export const Route = createFileRoute("/article/$id")({
       <main className="container-bs py-24 text-center flex-1">
         <h1 className="font-serif text-4xl font-bold">Article not found</h1>
         <Link to="/" className="text-primary hover:underline mt-4 inline-block">Back to home</Link>
+      </main>
+      <SiteFooter />
+    </div>
+  ),
+  pendingComponent: () => (
+    <div className="min-h-screen flex flex-col">
+      <SiteHeader />
+      <main className="container-bs py-10 max-w-4xl flex-1">
+        <div className="h-4 w-32 bg-surface animate-pulse mb-6" />
+        <div className="h-12 w-3/4 bg-surface animate-pulse mb-4" />
+        <div className="h-12 w-1/2 bg-surface animate-pulse mb-8" />
+        <div className="h-6 w-full bg-surface animate-pulse mb-10" />
+        <div className="aspect-video w-full bg-surface animate-pulse mb-12" />
+        <div className="space-y-4">
+          <div className="h-4 w-full bg-surface animate-pulse" />
+          <div className="h-4 w-full bg-surface animate-pulse" />
+          <div className="h-4 w-3/4 bg-surface animate-pulse" />
+        </div>
       </main>
       <SiteFooter />
     </div>
@@ -144,6 +164,16 @@ function ArticlePage() {
           <div className="img-zoom mt-6 bg-surface max-h-[500px] overflow-hidden">
             <img src={article.image} alt={article.title} className="w-full h-full object-cover" width={1280} height={720} />
           </div>
+
+          {article.images && article.images.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              {article.images.map((img: string, idx: number) => (
+                <div key={idx} className="img-zoom bg-surface aspect-video overflow-hidden border border-rule">
+                  <img src={img} alt={`Additional image ${idx + 1}`} className="w-full h-full object-cover" loading="lazy" />
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* Render content as HTML if it's from a rich text editor, or split into paragraphs if it's plain text */}
           <div className="overflow-hidden w-full">

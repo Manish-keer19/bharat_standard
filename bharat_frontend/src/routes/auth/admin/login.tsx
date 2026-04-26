@@ -24,7 +24,7 @@ function AdminLogin() {
 
     try {
       const res = await authService.login({ email, password });
-      
+
       if (res.success) {
         localStorage.setItem("admin_token", res.data.token);
         toast.success("Login successful!");
@@ -55,10 +55,10 @@ function AdminLogin() {
               <Label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-ink-muted">Email Address</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 h-4 w-4 text-primary" />
-                <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="admin@bharatstandard.com" 
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="admin@bharatstandard.com"
                   className="pl-10 rounded-none border-rule focus:border-primary transition-colors h-11"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -70,9 +70,9 @@ function AdminLogin() {
               <Label htmlFor="password" className="text-xs font-bold uppercase tracking-widest text-ink-muted">Security Password</Label>
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-4 w-4 text-primary" />
-                <Input 
-                  id="password" 
-                  type="password" 
+                <Input
+                  id="password"
+                  type="password"
                   className="pl-10 rounded-none border-rule focus:border-primary transition-colors h-11"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

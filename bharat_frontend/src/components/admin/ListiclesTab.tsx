@@ -271,7 +271,7 @@ const ListiclesTab = ({ listicles, refreshData }: ListiclesTabProps) => {
                       <div className="absolute -left-3 top-6 w-8 h-8 bg-ink text-white flex items-center justify-center font-bold text-xs">
                         {index + 1}
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-[1fr_200px] gap-6">
+                      <div className="grid grid-cols-1 lg:grid-cols-[1fr_200px] gap-6">
                         <div className="space-y-4">
                           <div className="space-y-2">
                             <Label className="text-[10px] font-bold uppercase tracking-widest text-ink-muted">Item Title</Label>

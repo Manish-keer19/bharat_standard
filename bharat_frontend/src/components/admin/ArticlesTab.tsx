@@ -42,7 +42,7 @@ const ArticlesTab = ({ articles, categories, refreshData }: ArticlesTabProps) =>
     setArtContent(article.content);
     setArtCat(article.categoryId);
     setExistingImages(article.images || []);
-    
+
     if (article.createdAt) {
       const date = new Date(article.createdAt);
       const formatted = date.toISOString().slice(0, 16);
@@ -172,12 +172,12 @@ const ArticlesTab = ({ articles, categories, refreshData }: ArticlesTabProps) =>
                 </div>
                 <div className="space-y-2">
                   <Label className="text-xs font-bold uppercase tracking-widest text-ink-muted">Publication Date (Manual Override)</Label>
-                  <Input 
-                    disabled={isSubmitting} 
-                    type="datetime-local" 
-                    value={artDate} 
-                    onChange={(e) => setArtDate(e.target.value)} 
-                    className="rounded-none border-rule bg-white h-12 text-sm font-bold" 
+                  <Input
+                    disabled={isSubmitting}
+                    type="datetime-local"
+                    value={artDate}
+                    onChange={(e) => setArtDate(e.target.value)}
+                    className="rounded-none border-rule bg-white h-12 text-sm font-bold"
                   />
                   <p className="text-[10px] text-ink-muted italic">Leave empty to use current time. Use this to backdate stories.</p>
                 </div>
@@ -186,9 +186,9 @@ const ArticlesTab = ({ articles, categories, refreshData }: ArticlesTabProps) =>
                   <div className="flex flex-col gap-4 mt-1">
                     {(artImage || (editingArticle && editingArticle.imageUrl)) && (
                       <div className="relative aspect-video w-full rounded-none overflow-hidden border border-rule bg-white shadow-sm">
-                        <img 
-                          src={artImage ? URL.createObjectURL(artImage) : editingArticle.imageUrl} 
-                          alt="cover preview" 
+                        <img
+                          src={artImage ? URL.createObjectURL(artImage) : editingArticle.imageUrl}
+                          alt="cover preview"
                           className="w-full h-full object-cover"
                         />
                         {artImage && (
@@ -225,7 +225,59 @@ const ArticlesTab = ({ articles, categories, refreshData }: ArticlesTabProps) =>
                     />
                   </div>
                 </div>
-                
+
+                <div className="space-y-2">
+                  <Label className="text-xs font-bold uppercase tracking-widest text-ink-muted">Gallery / Supplemental Images</Label>
+                  <div className="grid grid-cols-3 gap-3 mb-3">
+                    {existingImages.map((url, i) => (
+                      <div key={i} className="relative aspect-square border border-rule bg-white overflow-hidden group">
+                        <img src={url} alt={`gallery ${i}`} className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => setExistingImages(prev => prev.filter((_, index) => index !== i))}
+                          className="absolute inset-0 bg-destructive/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </div>
+                    ))}
+                    {artImages.map((file, i) => (
+                      <div key={`new-${i}`} className="relative aspect-square border border-rule bg-white overflow-hidden group">
+                        <img src={URL.createObjectURL(file)} alt={`new gallery ${i}`} className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => setArtImages(prev => prev.filter((_, index) => index !== i))}
+                          className="absolute inset-0 bg-primary/80 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <Input
+                    disabled={isSubmitting}
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    ref={galleryInputRef}
+                    className="rounded-none border-rule bg-white cursor-pointer file:bg-primary file:text-white file:border-none file:px-4 file:h-full file:mr-4 file:font-bold file:uppercase file:text-[10px] file:tracking-widest"
+                    onChange={(e) => {
+                      if (e.target.files) {
+                        const files = Array.from(e.target.files);
+                        const tooLarge = files.find(f => f.size > 3 * 1024 * 1024);
+                        if (tooLarge) {
+                          toast.error("All gallery images must be less than 3MB");
+                          if (galleryInputRef.current) galleryInputRef.current.value = "";
+                          return;
+                        }
+                        setArtImages(prev => [...prev, ...files]);
+                        if (galleryInputRef.current) galleryInputRef.current.value = "";
+                      }
+                    }}
+                  />
+                  <p className="text-[10px] text-ink-muted italic">Add multiple images to display within the article body or gallery.</p>
+                </div>
+
                 <div className="space-y-2">
                   <Label className="text-xs font-bold uppercase tracking-widest text-ink-muted">Short Excerpt</Label>
                   <Textarea disabled={isSubmitting} value={artExcerpt} onChange={(e) => setArtExcerpt(e.target.value)} placeholder="Write a brief, engaging summary..." className="rounded-none border-rule bg-white min-h-[100px] resize-none" />
@@ -278,7 +330,7 @@ const ArticlesTab = ({ articles, categories, refreshData }: ArticlesTabProps) =>
         <div className="grid grid-cols-1 gap-4">
           {articles.length === 0 ? (
             [1, 2, 3].map(i => (
-                <div key={i} className="h-32 bg-surface rounded-none animate-pulse border border-rule" />
+              <div key={i} className="h-32 bg-surface rounded-none animate-pulse border border-rule" />
             ))
           ) : (
             articles.map(article => (
@@ -296,15 +348,21 @@ const ArticlesTab = ({ articles, categories, refreshData }: ArticlesTabProps) =>
                       <span className="flex items-center gap-1.5"><Edit className="w-3 h-3 text-primary" /> {article.author || "Staff Writer"}</span>
                       <span className="text-rule">|</span>
                       <span>{new Date(article.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                      {article.images && article.images.length > 0 && (
+                        <>
+                          <span className="text-rule">|</span>
+                          <span className="text-primary">{article.images.length} Images</span>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
-                <div className="flex sm:flex-col gap-px w-full sm:w-20 bg-rule border-t sm:border-t-0 sm:border-l border-rule">
+                <div className="flex sm:flex-col gap-4 w-full sm:w-20 bg-rule border-t sm:border-t-0 sm:border-l border-rule">
                   <Button disabled={isSubmitting} variant="ghost" className="flex-1 rounded-none h-16 bg-white hover:bg-primary/5 text-ink hover:text-primary transition-all p-0" onClick={() => startEdit(article)}>
-                    <Edit className="w-5 h-5"/>
+                    <Edit className="w-5 h-5" />
                   </Button>
                   <Button disabled={isSubmitting} variant="ghost" className="flex-1 rounded-none h-16 bg-white hover:bg-destructive/5 text-ink hover:text-destructive transition-all p-0" onClick={() => handleDelete(article.id)}>
-                    <Trash2 className="w-5 h-5"/>
+                    <Trash2 className="w-5 h-5" />
                   </Button>
                 </div>
               </Card>
