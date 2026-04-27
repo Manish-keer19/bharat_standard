@@ -5,7 +5,7 @@ import { app } from "./app.js";
 
 dotenv.config();
 
-const PORT = Number(process.env.PORT) || 3001;
+const PORT = Number(process.env.PORT) || 3002;
 
 // ✅ Start server after Prisma connects
 async function startServer() {
