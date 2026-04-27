@@ -290,11 +290,11 @@ function HomePage() {
               <h2 className="font-serif text-3xl md:text-4xl font-bold mt-2 leading-tight text-ink">
                 Reach India’s most engaged business audience.
               </h2>
-              <p className="text-ink-muted mt-3">
+              {/* <p className="text-ink-muted mt-3">
                 PR articles and listicles starting at ₹2,000. Editor-reviewed, indexed within 24 hours.
-              </p>
+              </p> */}
               <Link
-                to="/publish"
+                to="/"
                 className="inline-flex items-center mt-5 bg-primary text-primary-foreground text-sm font-bold uppercase tracking-wider px-5 py-3 hover:bg-primary/90 transition-colors"
               >
                 Get started

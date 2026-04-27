@@ -44,7 +44,7 @@ export function SiteFooter() {
           <ul className="space-y-2 text-sm text-ink-muted">
             <li><Link to="/about" className="hover:text-primary">About us</Link></li>
             <li><Link to="/contact" className="hover:text-primary">Contact</Link></li>
-            <li><Link to="/publish" className="hover:text-primary">Publish with us</Link></li>
+          
             <li><a href="#" className="hover:text-primary">Editorial code</a></li>
             <li><a href="#" className="hover:text-primary">Privacy policy</a></li>
           </ul>

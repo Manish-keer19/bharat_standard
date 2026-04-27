@@ -104,8 +104,8 @@ function ListiclePage() {
           </div>
         </header>
 
-        <div className="img-zoom container-bs">
-          <img src={listicle.coverUrl || "https://images.unsplash.com/photo-1559136555-9303baea8ebd"} alt={listicle.title} className="w-full aspect-[21/9] object-cover" width={1600} height={686} />
+        <div className="img-zoom container-bs flex justify-center">
+          <img src={listicle.coverUrl || "https://images.unsplash.com/photo-1559136555-9303baea8ebd"} alt={listicle.title} className="max-w-full max-h-[500px] w-auto h-auto block border border-rule" />
         </div>
 
         <section className="container-bs py-12 max-w-4xl space-y-10">

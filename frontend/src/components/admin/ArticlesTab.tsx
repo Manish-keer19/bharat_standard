@@ -185,11 +185,11 @@ const ArticlesTab = ({ articles, categories, refreshData }: ArticlesTabProps) =>
                   <Label className="text-xs font-bold uppercase tracking-widest text-ink-muted">Featured Image (Cover)</Label>
                   <div className="flex flex-col gap-4 mt-1">
                     {(artImage || (editingArticle && editingArticle.imageUrl)) && (
-                      <div className="relative aspect-video w-full rounded-none overflow-hidden border border-rule bg-white shadow-sm">
+                      <div className="relative w-full rounded-none overflow-hidden border border-rule bg-surface shadow-sm flex justify-center">
                         <img
                           src={artImage ? URL.createObjectURL(artImage) : editingArticle.imageUrl}
                           alt="cover preview"
-                          className="w-full h-full object-cover"
+                          className="max-w-full max-h-[400px] w-auto h-auto block"
                         />
                         {artImage && (
                           <button

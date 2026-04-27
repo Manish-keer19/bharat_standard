@@ -98,7 +98,7 @@ function ArticlePage() {
 
           <span className="eyebrow">{article.category}</span>
           <h1 className="font-serif text-3xl md:text-5xl font-bold leading-tight mt-2 text-ink animate-fade-up">
-            {article.title}
+            {article.title} 
           </h1>
           <p className="text-lg md:text-xl text-ink-muted mt-4 leading-relaxed">{article.excerpt}</p>
 
@@ -161,8 +161,8 @@ function ArticlePage() {
             </div>
           </div>
 
-          <div className="img-zoom mt-6 bg-surface max-h-[500px] overflow-hidden">
-            <img src={article.image} alt={article.title} className="w-full h-full object-cover" width={1280} height={720} />
+          <div className="img-zoom mt-6 bg-surface overflow-hidden border border-rule flex justify-center">
+            <img src={article.image} alt={article.title} className="max-w-full max-h-[500px] w-auto h-auto block" />
           </div>
 
           {article.images && article.images.length > 0 && (

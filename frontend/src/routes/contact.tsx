@@ -27,12 +27,12 @@ function ContactPage() {
             For news tips, story pitches, partnerships or advertising enquiries, write to the relevant desk below.
             We respond within one business day.
           </p>
-          <ul className="mt-6 space-y-4 text-sm">
+          {/* <ul className="mt-6 space-y-4 text-sm">
             <li className="flex gap-3"><Mail className="w-5 h-5 text-primary mt-0.5" /><span><strong className="block">Newsroom</strong> newsroom@bharatstandard.in</span></li>
             <li className="flex gap-3"><Mail className="w-5 h-5 text-primary mt-0.5" /><span><strong className="block">Advertising & PR</strong> partners@bharatstandard.in</span></li>
             <li className="flex gap-3"><Phone className="w-5 h-5 text-primary mt-0.5" /><span><strong className="block">Phone</strong> +91 11 4000 0000</span></li>
             <li className="flex gap-3"><MapPin className="w-5 h-5 text-primary mt-0.5" /><span><strong className="block">Office</strong> 4th Floor, Connaught Place, New Delhi 110001</span></li>
-          </ul>
+          </ul> */}
         </div>
         <form onSubmit={(e) => e.preventDefault()} className="card-news p-6 space-y-4 bg-background">
           <div>
