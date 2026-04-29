@@ -52,9 +52,7 @@ function ListiclesIndex() {
               >
                 <div className="img-zoom aspect-[16/10] bg-surface relative">
                   <img src={l.coverUrl || "https://images.unsplash.com/photo-1559136555-9303baea8ebd"} alt={l.title} loading="lazy" className="w-full h-full object-cover" width={1024} height={640} />
-                  <span className="absolute top-3 left-3 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-wider px-2 py-1">
-                    Top {l.items?.length || 0}
-                  </span>
+                 
                 </div>
                 <div className="p-5">
                   <h3 className="font-serif text-xl font-bold leading-snug text-ink group-hover:text-primary transition-colors">

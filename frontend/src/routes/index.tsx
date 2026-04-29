@@ -293,12 +293,12 @@ function HomePage() {
               {/* <p className="text-ink-muted mt-3">
                 PR articles and listicles starting at ₹2,000. Editor-reviewed, indexed within 24 hours.
               </p> */}
-              <Link
+              {/* <Link
                 to="/"
                 className="inline-flex items-center mt-5 bg-primary text-primary-foreground text-sm font-bold uppercase tracking-wider px-5 py-3 hover:bg-primary/90 transition-colors"
               >
                 Get started
-              </Link>
+              </Link> */}
             </div>
           </div>
         </section>

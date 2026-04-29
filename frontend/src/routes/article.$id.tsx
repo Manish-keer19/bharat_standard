@@ -15,7 +15,7 @@ export const Route = createFileRoute("/article/$id")({
           id: art.id,
           title: art.title,
           excerpt: art.excerpt || "",
-          content: art.content,
+          content: art.content ? art.content.replace(/&nbsp;/g, ' ') : "",
           image: art.imageUrl || "https://images.unsplash.com/photo-1504711434969-e33886168f5c",
           images: art.images || [],
           category: art.category?.name || "News",
@@ -178,7 +178,16 @@ function ArticlePage() {
           {/* Render content as HTML if it's from a rich text editor, or split into paragraphs if it's plain text */}
           <div className="overflow-hidden w-full">
             <div 
+              lang="en"
               className="prose prose-lg max-w-none mt-8 space-y-5 text-ink leading-relaxed text-[1.05rem]"
+              style={{
+                textAlign: 'justify',
+                hyphens: 'auto',
+                WebkitHyphens: 'auto',
+                msHyphens: 'auto',
+                wordWrap: 'break-word',
+                overflowWrap: 'break-word'
+              }}
               dangerouslySetInnerHTML={{ __html: article.content }}
             />
           </div>

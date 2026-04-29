@@ -10,7 +10,16 @@ export const Route = createFileRoute("/listicle/$slug")({
     try {
       const res = await publicService.getListicle(params.slug);
       if (!res.success) throw notFound();
-      return { listicle: res.data };
+      
+      const data = res.data;
+      if (data.items) {
+        data.items = data.items.map((item: any) => ({
+          ...item,
+          body: item.body ? item.body.replace(/&nbsp;/g, ' ') : ''
+        }));
+      }
+      
+      return { listicle: data };
     } catch (error) {
       throw notFound();
     }
@@ -62,7 +71,7 @@ function ListiclePage() {
       toast.success("Link copied to clipboard!");
     } else {
       if (navigator.share) {
-        navigator.share({ title, url }).catch(() => {});
+        navigator.share({ title, url }).catch(() => { });
       } else {
         handleShare('copy');
       }
@@ -121,7 +130,7 @@ function ListiclePage() {
               </div>
               <div>
                 <h2 className="font-serif text-2xl font-bold text-ink">{item.title}</h2>
-                <p className="text-ink-muted mt-3 leading-relaxed whitespace-pre-wrap">{item.body}</p>
+                <p className="text-ink-muted mt-3 leading-relaxed whitespace-pre-wrap break-words">{item.body}</p>
               </div>
             </article>
           ))}

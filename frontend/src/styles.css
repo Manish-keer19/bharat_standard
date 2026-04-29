@@ -131,11 +131,16 @@
   .container-bs {
     width: 100%;
     max-width: 1280px;
-    margin-inline: auto;
-    padding-inline: 1rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
   }
   @media (min-width: 768px) {
-    .container-bs { padding-inline: 1.5rem; }
+    .container-bs { 
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
   }
 
   .eyebrow {
@@ -214,11 +219,13 @@
   .prose video, 
   .prose iframe,
   .prose table {
-    max-width: 100%;
-    height: auto;
+    max-width: 100% !important;
+    height: auto !important;
   }
   .prose {
     word-wrap: break-word;
     overflow-wrap: break-word;
+    hyphens: auto;
+    text-align: justify;
   }
 }
