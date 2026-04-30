@@ -23,6 +23,8 @@ jobs:
       - name: Build frontend
         working-directory: frontend
         run: npm run build
+        env:
+          VITE_API_URL: "/api/v1"
 
       - name: Deploy frontend
         uses: appleboy/scp-action@v0.1.7
@@ -81,6 +83,8 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /home/manish/bharat_standard/backend
+            npm install --production
+            npx prisma generate
             pm2 restart bharat_standard_backend || pm2 start dist/index.js --name bharat_standard_backend
             pm2 save
 
