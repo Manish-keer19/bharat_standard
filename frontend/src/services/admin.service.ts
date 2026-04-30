@@ -2,8 +2,8 @@ import axiosInstance from "./axiosInstance";
 
 export const adminService = {
   // Articles
-  getArticles: async () => {
-    const res = await axiosInstance.get("/admin/articles");
+  getArticles: async (params?: any) => {
+    const res = await axiosInstance.get("/admin/articles", { params });
     return res.data;
   },
   getArticle: async (id: string) => {
@@ -56,8 +56,8 @@ export const adminService = {
   },
 
   // Listicles
-  getListicles: async () => {
-    const res = await axiosInstance.get("/admin/listicles");
+  getListicles: async (params?: any) => {
+    const res = await axiosInstance.get("/admin/listicles", { params });
     return res.data;
   },
   getListicle: async (id: string) => {

@@ -13,8 +13,8 @@ export const publicService = {
     const res = await axiosInstance.get("/public/categories");
     return res.data;
   },
-  getListicles: async () => {
-    const res = await axiosInstance.get("/public/listicles");
+  getListicles: async (params?: any) => {
+    const res = await axiosInstance.get("/public/listicles", { params });
     return res.data;
   },
   getListicle: async (id: string) => {

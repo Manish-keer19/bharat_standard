@@ -12,20 +12,53 @@ export const Route = createFileRoute("/admin/listicles")({
 function AdminListicles() {
   const [listicles, setListicles] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
 
   useEffect(() => {
-    fetchData();
+    fetchInitialData();
   }, []);
 
-  const fetchData = async () => {
+  const fetchInitialData = async () => {
     setIsLoading(true);
+    setPage(1);
     try {
-      const res = await adminService.getListicles();
-      if (res.success) setListicles(res.data);
+      const res = await adminService.getListicles({ page: 1, limit: 12 });
+      if (res.success) {
+        setListicles(res.data);
+        if (res.meta) {
+          setHasMore(res.meta.page < res.meta.totalPages);
+        } else {
+          setHasMore(res.data.length === 12);
+        }
+      }
     } catch (error) {
       toast.error("Failed to load listicles data");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleLoadMore = async () => {
+    if (isFetchingMore || !hasMore) return;
+    setIsFetchingMore(true);
+    try {
+      const nextPage = page + 1;
+      const res = await adminService.getListicles({ page: nextPage, limit: 12 });
+      if (res.success) {
+        setListicles(prev => [...prev, ...res.data]);
+        setPage(nextPage);
+        if (res.meta) {
+          setHasMore(res.meta.page < res.meta.totalPages);
+        } else {
+          setHasMore(res.data.length === 12);
+        }
+      }
+    } catch (error) {
+      toast.error("Failed to load more listicles");
+    } finally {
+      setIsFetchingMore(false);
     }
   };
 
@@ -40,7 +73,10 @@ function AdminListicles() {
       </header>
       <ListiclesTab 
         listicles={listicles} 
-        refreshData={fetchData} 
+        refreshData={fetchInitialData} 
+        loadMore={handleLoadMore}
+        hasMore={hasMore}
+        isFetchingMore={isFetchingMore}
       />
     </div>
   );

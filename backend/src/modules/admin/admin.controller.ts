@@ -40,19 +40,36 @@ export const createArticle = asyncHandler(async (req: any, res: any) => {
 });
 
 export const getArticlesForAdmin = asyncHandler(async (req: any, res: any) => {
-  const articles = await prisma.article.findMany({
-    include: {
-      category: true,
-      user: { select: { id: true, name: true, email: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+  const { page = 1, limit = 100 } = req.query;
+  
+  const pageNumber = parseInt(page as string, 10) || 1;
+  const limitNumber = parseInt(limit as string, 10) || 100;
+  const skip = (pageNumber - 1) * limitNumber;
+
+  const [articles, totalCount] = await Promise.all([
+    prisma.article.findMany({
+      include: {
+        category: true,
+        user: { select: { id: true, name: true, email: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limitNumber,
+    }),
+    prisma.article.count()
+  ]);
 
   return sendResponse(res, {
     status: 200,
     success: true,
     message: "Articles retrieved successfully",
     data: articles,
+    meta: {
+      page: pageNumber,
+      limit: limitNumber,
+      totalCount,
+      totalPages: Math.ceil(totalCount / limitNumber)
+    }
   });
 });
 
@@ -361,18 +378,35 @@ export const createListicle = asyncHandler(async (req: any, res: any) => {
 });
 
 export const getListiclesForAdmin = asyncHandler(async (req: any, res: any) => {
-  const listicles = await (prisma as any).listicle.findMany({
-    include: {
-      user: { select: { id: true, name: true, email: true } },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+  const { page = 1, limit = 100 } = req.query;
+  
+  const pageNumber = parseInt(page as string, 10) || 1;
+  const limitNumber = parseInt(limit as string, 10) || 100;
+  const skip = (pageNumber - 1) * limitNumber;
+
+  const [listicles, totalCount] = await Promise.all([
+    (prisma as any).listicle.findMany({
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      skip,
+      take: limitNumber,
+    }),
+    (prisma as any).listicle.count()
+  ]);
 
   return sendResponse(res, {
     status: 200,
     success: true,
     message: "Listicles retrieved successfully",
     data: listicles,
+    meta: {
+      page: pageNumber,
+      limit: limitNumber,
+      totalCount,
+      totalPages: Math.ceil(totalCount / limitNumber)
+    }
   });
 });
 

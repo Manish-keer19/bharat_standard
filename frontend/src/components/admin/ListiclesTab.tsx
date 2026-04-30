@@ -12,6 +12,9 @@ import { mediaService } from "@/services/media.service";
 interface ListiclesTabProps {
   listicles: any[];
   refreshData: () => void;
+  loadMore?: () => void;
+  hasMore?: boolean;
+  isFetchingMore?: boolean;
 }
 
 interface ListicleItem {
@@ -22,7 +25,7 @@ interface ListicleItem {
   imageFile?: File | null;
 }
 
-const ListiclesTab = ({ listicles, refreshData }: ListiclesTabProps) => {
+const ListiclesTab = ({ listicles, refreshData, loadMore, hasMore, isFetchingMore }: ListiclesTabProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingListicle, setEditingListicle] = useState<any>(null);
 
@@ -402,6 +405,19 @@ const ListiclesTab = ({ listicles, refreshData }: ListiclesTabProps) => {
             ))
           )}
         </div>
+
+        {hasMore && listicles.length > 0 && loadMore && (
+          <div className="mt-8 flex justify-center">
+            <Button 
+              onClick={loadMore} 
+              disabled={isFetchingMore}
+              variant="outline"
+              className="rounded-none border-ink text-ink font-bold px-10 h-12 hover:bg-ink hover:text-white transition-all"
+            >
+              {isFetchingMore ? "Loading..." : "Load Older Listicles"}
+            </Button>
+          </div>
+        )}
       </section>
     </div>
   );

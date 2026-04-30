@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SearchRouteImport } from './routes/search'
 import { Route as PublishRouteImport } from './routes/publish'
 import { Route as ListiclesRouteImport } from './routes/listicles'
 import { Route as LatestRouteImport } from './routes/latest'
@@ -26,6 +27,11 @@ import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
 import { Route as AdminArticlesRouteImport } from './routes/admin/articles'
 import { Route as AuthAdminLoginRouteImport } from './routes/auth/admin/login'
 
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublishRoute = PublishRouteImport.update({
   id: '/publish',
   path: '/publish',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/latest': typeof LatestRoute
   '/listicles': typeof ListiclesRoute
   '/publish': typeof PublishRoute
+  '/search': typeof SearchRoute
   '/admin/articles': typeof AdminArticlesRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/listicles': typeof AdminListiclesRoute
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/latest': typeof LatestRoute
   '/listicles': typeof ListiclesRoute
   '/publish': typeof PublishRoute
+  '/search': typeof SearchRoute
   '/admin/articles': typeof AdminArticlesRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/listicles': typeof AdminListiclesRoute
@@ -151,6 +159,7 @@ export interface FileRoutesById {
   '/latest': typeof LatestRoute
   '/listicles': typeof ListiclesRoute
   '/publish': typeof PublishRoute
+  '/search': typeof SearchRoute
   '/admin/articles': typeof AdminArticlesRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/listicles': typeof AdminListiclesRoute
@@ -171,6 +180,7 @@ export interface FileRouteTypes {
     | '/latest'
     | '/listicles'
     | '/publish'
+    | '/search'
     | '/admin/articles'
     | '/admin/categories'
     | '/admin/listicles'
@@ -188,6 +198,7 @@ export interface FileRouteTypes {
     | '/latest'
     | '/listicles'
     | '/publish'
+    | '/search'
     | '/admin/articles'
     | '/admin/categories'
     | '/admin/listicles'
@@ -206,6 +217,7 @@ export interface FileRouteTypes {
     | '/latest'
     | '/listicles'
     | '/publish'
+    | '/search'
     | '/admin/articles'
     | '/admin/categories'
     | '/admin/listicles'
@@ -225,6 +237,7 @@ export interface RootRouteChildren {
   LatestRoute: typeof LatestRoute
   ListiclesRoute: typeof ListiclesRoute
   PublishRoute: typeof PublishRoute
+  SearchRoute: typeof SearchRoute
   ArticleIdRoute: typeof ArticleIdRoute
   CategoryCatRoute: typeof CategoryCatRoute
   ListicleSlugRoute: typeof ListicleSlugRoute
@@ -233,6 +246,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/publish': {
       id: '/publish'
       path: '/publish'
@@ -374,6 +394,7 @@ const rootRouteChildren: RootRouteChildren = {
   LatestRoute: LatestRoute,
   ListiclesRoute: ListiclesRoute,
   PublishRoute: PublishRoute,
+  SearchRoute: SearchRoute,
   ArticleIdRoute: ArticleIdRoute,
   CategoryCatRoute: CategoryCatRoute,
   ListicleSlugRoute: ListicleSlugRoute,

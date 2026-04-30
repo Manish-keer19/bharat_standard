@@ -3,7 +3,11 @@ import { sendResponse } from "../../utils/response.js";
 import prisma from "../../prisma.js";
 
 export const getPublicArticles = asyncHandler(async (req: any, res: any) => {
-  const { category } = req.query;
+  const { category, page = 1, limit = 100, search } = req.query;
+  
+  const pageNumber = parseInt(page as string, 10) || 1;
+  const limitNumber = parseInt(limit as string, 10) || 100;
+  const skip = (pageNumber - 1) * limitNumber;
 
   const where: any = {
     published: true,
@@ -18,21 +22,40 @@ export const getPublicArticles = asyncHandler(async (req: any, res: any) => {
     };
   }
 
-  const articles = await prisma.article.findMany({
-    where,
-    include: {
-      category: true,
-    },
-    orderBy: {
-      createdAt: "desc"
-    }
-  });
+  if (search) {
+    where.OR = [
+      { title: { contains: search as string, mode: 'insensitive' } },
+      { excerpt: { contains: search as string, mode: 'insensitive' } },
+      { content: { contains: search as string, mode: 'insensitive' } },
+    ];
+  }
+
+  const [articles, totalCount] = await Promise.all([
+    prisma.article.findMany({
+      where,
+      include: {
+        category: true,
+      },
+      orderBy: {
+        createdAt: "desc"
+      },
+      skip,
+      take: limitNumber,
+    }),
+    prisma.article.count({ where })
+  ]);
 
   return sendResponse(res, {
     status: 200,
     success: true,
     message: "Public articles fetched properly",
     data: articles,
+    meta: {
+      page: pageNumber,
+      limit: limitNumber,
+      totalCount,
+      totalPages: Math.ceil(totalCount / limitNumber)
+    }
   });
 });
 
@@ -82,20 +105,37 @@ export const getPublicArticleById = asyncHandler(async (req: any, res: any) => {
 });
 
 export const getPublicListicles = asyncHandler(async (req: any, res: any) => {
-  const listicles = await (prisma as any).listicle.findMany({
-    where: {
-      published: true,
-    },
-    orderBy: {
-      createdAt: "desc"
-    }
-  });
+  const { page = 1, limit = 100 } = req.query;
+  
+  const pageNumber = parseInt(page as string, 10) || 1;
+  const limitNumber = parseInt(limit as string, 10) || 100;
+  const skip = (pageNumber - 1) * limitNumber;
+
+  const where = { published: true };
+
+  const [listicles, totalCount] = await Promise.all([
+    (prisma as any).listicle.findMany({
+      where,
+      orderBy: {
+        createdAt: "desc"
+      },
+      skip,
+      take: limitNumber,
+    }),
+    (prisma as any).listicle.count({ where })
+  ]);
 
   return sendResponse(res, {
     status: 200,
     success: true,
     message: "Public listicles fetched properly",
     data: listicles,
+    meta: {
+      page: pageNumber,
+      limit: limitNumber,
+      totalCount,
+      totalPages: Math.ceil(totalCount / limitNumber)
+    }
   });
 });
 

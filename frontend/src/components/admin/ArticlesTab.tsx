@@ -17,9 +17,12 @@ interface ArticlesTabProps {
   articles: any[];
   categories: any[];
   refreshData: () => void;
+  loadMore?: () => void;
+  hasMore?: boolean;
+  isFetchingMore?: boolean;
 }
 
-const ArticlesTab = ({ articles, categories, refreshData }: ArticlesTabProps) => {
+const ArticlesTab = ({ articles, categories, refreshData, loadMore, hasMore, isFetchingMore }: ArticlesTabProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [editingArticle, setEditingArticle] = useState<any>(null);
 
@@ -373,6 +376,19 @@ const ArticlesTab = ({ articles, categories, refreshData }: ArticlesTabProps) =>
             </div>
           )}
         </div>
+        
+        {hasMore && articles.length > 0 && loadMore && (
+          <div className="mt-8 flex justify-center">
+            <Button 
+              onClick={loadMore} 
+              disabled={isFetchingMore}
+              variant="outline"
+              className="rounded-none border-ink text-ink font-bold px-10 h-12 hover:bg-ink hover:text-white transition-all"
+            >
+              {isFetchingMore ? "Loading..." : "Load Older Archives"}
+            </Button>
+          </div>
+        )}
       </section>
     </div>
   );

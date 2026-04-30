@@ -22,34 +22,60 @@ export const Route = createFileRoute("/latest")({
 function LatestPage() {
   const [articles, setArticles] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
+  const fetchArticles = async (pageNum: number, isInitial: boolean = false) => {
+    try {
+      if (isInitial) setIsLoading(true);
+      else setIsFetchingMore(true);
+
+      // We fetch 10 at a time for a better user experience with pagination
+      const res = await publicService.getArticles({ page: pageNum, limit: 10 });
+      
+      if (res.success) {
+        const mappedArticles = res.data.map((art: any) => ({
+          id: art.id,
+          title: art.title,
+          excerpt: art.excerpt || "",
+          image: art.imageUrl || "https://images.unsplash.com/photo-1504711434969-e33886168f5c",
+          category: art.category?.name || "News",
+          author: art.author || "Bharat Standard",
+          date: new Date(art.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
+          readMin: Math.ceil((art.content?.length || 0) / 1000) || 3
+        }));
+
+        if (isInitial) {
+          setArticles(mappedArticles);
+        } else {
+          setArticles(prev => [...prev, ...mappedArticles]);
+        }
+
+        // Use the metadata from our paginated backend response
+        if (res.meta) {
+          setHasMore(res.meta.page < res.meta.totalPages);
+        } else {
+          setHasMore(mappedArticles.length === 10);
+        }
+      }
+    } catch (error) {
+      toast.error("Failed to fetch latest news");
+    } finally {
+      setIsLoading(false);
+      setIsFetchingMore(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const res = await publicService.getArticles();
-        if (res.success) {
-          // Map backend data to ArticleCard format
-          const mappedArticles = res.data.map((art: any) => ({
-            id: art.id,
-            title: art.title,
-            excerpt: art.excerpt || "",
-            image: art.imageUrl || "https://images.unsplash.com/photo-1504711434969-e33886168f5c",
-            category: art.category?.name || "News",
-            author: art.author || "Bharat Standard",
-            date: new Date(art.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' }),
-            readMin: Math.ceil((art.content?.length || 0) / 1000) || 3
-          }));
-          setArticles(mappedArticles);
-        }
-      } catch (error) {
-        toast.error("Failed to fetch latest news");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchArticles();
+    fetchArticles(1, true);
   }, []);
+
+  const handleLoadMore = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchArticles(nextPage);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -68,9 +94,23 @@ function LatestPage() {
           ) : (
             <div className="space-y-5">
               {articles.length > 0 ? (
-                articles.map((a) => (
-                  <ArticleCard key={a.id} a={a} variant="row" />
-                ))
+                <>
+                  {articles.map((a) => (
+                    <ArticleCard key={a.id} a={a} variant="row" />
+                  ))}
+                  
+                  {hasMore && (
+                    <div className="pt-10 pb-5 flex justify-center">
+                      <button 
+                        onClick={handleLoadMore}
+                        disabled={isFetchingMore}
+                        className="px-8 py-3 bg-ink text-white font-medium rounded-full hover:bg-ink/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isFetchingMore ? "Loading more..." : "Load more stories"}
+                      </button>
+                    </div>
+                  )}
+                </>
               ) : (
                 <p className="italic text-ink-muted py-10">No articles found in the newsroom yet.</p>
               )}
