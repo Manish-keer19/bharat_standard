@@ -16,7 +16,8 @@ import {
   getListiclesForAdmin,
   getListicleForAdmin,
   updateListicle,
-  deleteListicle
+  deleteListicle,
+  getDashboardStats
 } from "./admin.controller.js";
 
 const router = express.Router();
@@ -24,8 +25,12 @@ const router = express.Router();
 // Apply auth and admin middleware to all routes in this file
 router.use(isAuthenticated, isAdmin);
 
+// Dashboard stats
+router.get("/stats", getDashboardStats);
+
 // Article routes
 router.post("/articles", createArticle);
+
 router.get("/articles", getArticlesForAdmin);
 router.get("/articles/:id", getArticleForAdmin);
 router.put("/articles/:id", updateArticle);

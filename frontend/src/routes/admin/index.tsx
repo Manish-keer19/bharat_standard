@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, LayoutList, ArrowRight } from "lucide-react";
+import { FileText, LayoutList, ArrowRight, LayoutGrid } from "lucide-react";
 import { adminService } from "@/services/admin.service";
+
 
 export const Route = createFileRoute("/admin/")({
   component: AdminOverview,
@@ -12,6 +13,7 @@ function AdminOverview() {
   const [stats, setStats] = useState<any>({
     categories: 0,
     articles: 0,
+    listicles: 0,
     lastArticle: null as any
   });
   const [isLoading, setIsLoading] = useState(true);
@@ -19,16 +21,17 @@ function AdminOverview() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [catsRes, artsRes] = await Promise.all([
-          adminService.getCategories(),
-          adminService.getArticles()
+        const [statsRes, artsRes] = await Promise.all([
+          adminService.getStats(),
+          adminService.getArticles({ limit: 1 })
         ]);
 
-        if (catsRes.success && artsRes.success) {
+        if (statsRes.success) {
           setStats({
-            categories: catsRes.data.length,
-            articles: artsRes.data.length,
-            lastArticle: artsRes.data[0] || null
+            categories: statsRes.data.categories,
+            articles: statsRes.data.articles,
+            listicles: statsRes.data.listicles,
+            lastArticle: artsRes.success && artsRes.data.length > 0 ? artsRes.data[0] : null
           });
         }
       } catch (error) {
@@ -42,21 +45,22 @@ function AdminOverview() {
 
   const cards = [
     { label: "Total Articles", value: stats.articles, icon: FileText, color: "text-blue-500", path: "/admin/articles" },
+    { label: "Listicles", value: stats.listicles, icon: LayoutGrid, color: "text-orange-500", path: "/admin/listicles" },
     { label: "Categories", value: stats.categories, icon: LayoutList, color: "text-purple-500", path: "/admin/categories" },
   ];
 
   return (
     <div className="space-y-10 animate-fade-in">
       <header className="border-b border-rule pb-6">
-        <h1 className="text-4xl font-serif font-bold tracking-tight text-ink">Intelligence Dashboard</h1>
+        <h1 className="text-4xl font-serif font-bold tracking-tight text-ink">Dashboard Overview</h1>
         <p className="text-ink-muted mt-2 font-medium">
-          Global editorial metrics and site performance overview.
+          Welcome back. Here's your magazine overview.
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {isLoading ? (
-          [1, 2].map((i) => (
+          [1, 2, 3].map((i) => (
             <div key={i} className="h-40 bg-surface rounded-none animate-pulse border border-rule" />
           ))
         ) : (
@@ -71,13 +75,14 @@ function AdminOverview() {
               <CardContent className="pt-2">
                 <div className="text-5xl font-serif font-bold text-ink mb-4">{card.value}</div>
                 <Link to={card.path} className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-ink hover:text-primary transition-colors group/link">
-                  Detailed Management <ArrowRight className="w-3 h-3 group-hover/link:translate-x-1 transition-transform" />
+                  Manage <ArrowRight className="w-3 h-3 group-hover/link:translate-x-1 transition-transform" />
                 </Link>
               </CardContent>
             </Card>
           ))
         )}
       </div>
+
 
       <div className="grid grid-cols-1 gap-8">
         <Card className="border-rule rounded-none shadow-none bg-surface p-8">

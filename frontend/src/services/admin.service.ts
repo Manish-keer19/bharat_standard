@@ -1,8 +1,13 @@
 import axiosInstance from "./axiosInstance";
 
 export const adminService = {
+  getStats: async () => {
+    const res = await axiosInstance.get("/admin/stats");
+    return res.data;
+  },
   // Articles
   getArticles: async (params?: any) => {
+
     const res = await axiosInstance.get("/admin/articles", { params });
     return res.data;
   },

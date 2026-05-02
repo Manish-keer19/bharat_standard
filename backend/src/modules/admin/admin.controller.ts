@@ -479,5 +479,25 @@ export const deleteListicle = asyncHandler(async (req: any, res: any) => {
   });
 });
 
+export const getDashboardStats = asyncHandler(async (req: any, res: any) => {
+  const [articleCount, listicleCount, categoryCount] = await Promise.all([
+    prisma.article.count(),
+    (prisma as any).listicle.count(),
+    prisma.category.count(),
+  ]);
+
+  return sendResponse(res, {
+    status: 200,
+    success: true,
+    message: "Dashboard statistics retrieved successfully",
+    data: {
+      articles: articleCount,
+      listicles: listicleCount,
+      categories: categoryCount,
+    },
+  });
+});
+
+
 
 
