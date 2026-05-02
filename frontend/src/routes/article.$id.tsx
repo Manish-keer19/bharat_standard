@@ -3,6 +3,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { publicService } from "@/services/public.service";
 import { Facebook, Twitter, Linkedin, Link as LinkIcon, Share2 } from "lucide-react";
+import { RichTextRenderer } from "@/components/common/RichTextRenderer";
 
 export const Route = createFileRoute("/article/$id")({
   loader: async ({ params }) => {
@@ -175,22 +176,8 @@ function ArticlePage() {
             </div>
           )}
 
-          {/* Render content as HTML if it's from a rich text editor, or split into paragraphs if it's plain text */}
-          <div className="overflow-hidden w-full">
-            <div 
-              lang="en"
-              className="prose prose-lg max-w-none mt-8 space-y-5 text-ink leading-relaxed text-[1.05rem]"
-              style={{
-                textAlign: 'justify',
-                hyphens: 'auto',
-                WebkitHyphens: 'auto',
-                msHyphens: 'auto',
-                wordWrap: 'break-word',
-                overflowWrap: 'break-word'
-              }}
-              dangerouslySetInnerHTML={{ __html: article.content }}
-            />
-          </div>
+          {/* Render content as HTML safely and with proper formatting */}
+          <RichTextRenderer content={article.content} className="mt-8" />
         </article>
 
         {related.length > 0 && (
